@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Environment>
+    <!-- Timeout -->
+    <TimeOut>5</TimeOut>
+
+    <!-- Web -->
+    <BrowserName>chrome</BrowserName>
+    <url>https://digital.harel-group.co.il/travel-policy/</url>
+
+    <Zone>Asia/Jerusalem</Zone>
+    <PlusDaysDep>7</PlusDaysDep>
+    <PlusDaysReturn>30</PlusDaysReturn>
+
+
+</Environment>
