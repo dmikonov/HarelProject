@@ -1,4 +1,4 @@
-name: CI + Allure (Java 21)
+name: CI with Allure Report
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
@@ -35,34 +35,28 @@ jobs:
       - name: Run tests (headless)
         run: mvn -B -Dheadless=true clean test
 
-      - name: Build Allure HTML
+      - name: Build Allure HTML report
         run: |
-          mvn -B io.qameta.allure:allure-maven:report \
+          mvn io.qameta.allure:allure-maven:report \
             -Dallure.results.directory=allure-results \
             -Dallure.report.directory=allure-report
-    
 
-
-      - name: Upload allure-results (artifact)
-        if: always()
+      - name: Upload raw Allure results
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: allure-results
 
-      - name: Upload Allure HTML (artifact)
-        if: always()
+      - name: Upload Allure HTML report
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report
 
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload Pages artifact
-        if: always()
+      - name: Upload report to Pages
         uses: actions/upload-pages-artifact@v3
         with:
           path: allure-report
