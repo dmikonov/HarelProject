@@ -27,9 +27,21 @@ jobs:
       - name: Install Chrome
         uses: browser-actions/setup-chrome@v1
 
-
+      # ВАЖНО: указываем suite и куда писать allure-results
       - name: Run TestNG suite (headless)
-        run: mvn -B clean test -Dheadless=true -DsuiteXmlFile=TestNGHarel.xml
+        run: mvn test \
+          -DsuiteXmlFile=TestNGHarel.xml \
+          -Dheadless=true \
+          -Dallure.results.directory=allure-results
+
+      # Немного отладки: покажем, что действительно создалось
+      - name: List allure-results (debug)
+        if: always()
+        run: |
+          echo "Workspace:" && pwd
+          ls -la
+          echo "allure-results:" && ls -la allure-results || true
+          echo "surefire-reports:" && ls -la target/surefire-reports || true
 
       - name: Upload allure-results
         if: always()
@@ -42,9 +54,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Download allure-results
         uses: actions/download-artifact@v4
         with:
