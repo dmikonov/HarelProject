@@ -34,5 +34,5 @@ The project includes **Allure Reports** for test visualization and is integrated
 ## How to Run Tests Locally
 Clone the repository:
   bash-script
-   git clone https://github.com/<your-username>/HarelProject.git
+   git clone https://github.com/dmikonov/HarelProject.git
    cd HarelProject
