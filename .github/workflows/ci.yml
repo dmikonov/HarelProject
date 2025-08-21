@@ -1,4 +1,4 @@
-name: CI with Allure Report
+name: CI + Allure (generate & publish)
 
 on:
   push:
@@ -10,16 +10,11 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
-  test-and-report:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
@@ -32,22 +27,38 @@ jobs:
       - name: Install Chrome
         uses: browser-actions/setup-chrome@v1
 
-      - name: Run tests (headless)
-        run: mvn -B -Dheadless=true clean test
 
-      - name: Build Allure HTML report
-        run: |
-          mvn io.qameta.allure:allure-maven:report \
-            -Dallure.results.directory=allure-results \
-            -Dallure.report.directory=allure-report
+      - name: Run TestNG suite (headless)
+        run: mvn -B clean test -Dheadless=true -DsuiteXmlFile=TestNGHarel.xml
 
-      - name: Upload raw Allure results
+      - name: Upload allure-results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: allure-results
 
-      - name: Upload Allure HTML report
+  report-and-deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download allure-results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+      - name: Generate Allure HTML
+        uses: simple-elf/allure-report-action@v1.8
+        with:
+          allure_results: allure-results
+          allure_report: allure-report
+
+      - name: Upload Allure HTML (artifact)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
@@ -56,18 +67,11 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload report to Pages
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: allure-report
 
-  deploy:
-    needs: test-and-report
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
