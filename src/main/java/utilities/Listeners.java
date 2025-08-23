@@ -52,12 +52,10 @@ public class Listeners extends CommonOps implements ITestListener {
 
 
     public void onTestFailedButWithinSuccessPercentage(ITestResult arg0) {
-        // TODO Auto-generated method stub
     }
 
     public void onTestSkipped(ITestResult test) {
         System.out.println("----------- Skipping Test ----------------" + test.getName());
-        // TODO Auto-generated method stub
     }
     @Attachment(value = "Page Screenshot",type = "image/png")
     public byte[] saveScreenshot(){

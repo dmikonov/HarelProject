@@ -1,12 +1,10 @@
 package extentions;
 
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import utilities.CommonOps;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class UIActions extends CommonOps {
